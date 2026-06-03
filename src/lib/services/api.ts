@@ -5,6 +5,7 @@ export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000/api/v1',
+    credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
@@ -31,6 +32,12 @@ export const api = createApi({
         body: userData,
       }),
       invalidatesTags: ['User'],
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
     }),
     getAllUsers: builder.query({
       query: () => '/auth',
@@ -129,6 +136,7 @@ export const api = createApi({
 export const {
   useLoginMutation,
   useSignupMutation,
+  useLogoutMutation,
   useGetAllUsersQuery,
   useGetProjectsQuery,
   useGetProjectByIdQuery,
