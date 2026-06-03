@@ -48,7 +48,10 @@ export default function LoginPage() {
 
     try {
       const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials(res.data));
+      dispatch(setCredentials({
+        token: res.data.accessToken,
+        user: res.data.user
+      }));
       router.push('/dashboard');
     } catch (err: any) {
       setFormError(err.data?.message || 'Login failed. Please check credentials.');
@@ -73,7 +76,10 @@ export default function LoginPage() {
     
     try {
       const res = await login({ email: demoEmail, password: demoPassword }).unwrap();
-      dispatch(setCredentials(res.data));
+      dispatch(setCredentials({
+        token: res.data.accessToken,
+        user: res.data.user
+      }));
       router.push('/dashboard');
     } catch (err: any) {
       if (err.status === 401 || err.status === 400) {
@@ -86,7 +92,10 @@ export default function LoginPage() {
           }).unwrap();
           
           const resRetry = await login({ email: demoEmail, password: demoPassword }).unwrap();
-          dispatch(setCredentials(resRetry.data));
+          dispatch(setCredentials({
+            token: resRetry.data.accessToken,
+            user: resRetry.data.user
+          }));
           router.push('/dashboard');
         } catch (signUpErr: any) {
           setFormError('Failed to initialize sandbox credentials.');

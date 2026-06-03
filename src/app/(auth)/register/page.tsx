@@ -1,11 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { RootState } from '../../../lib/store';
-import { setCredentials } from '../../../lib/features/auth/authSlice';
-import { useLoginMutation, useSignupMutation } from '../../../lib/services/api';
+import { useSignupMutation } from '../../../lib/services/api';
 import Link from 'next/link';
 
 import {
@@ -19,9 +16,7 @@ import {
 } from 'lucide-react';
 
 export default function RegisterPage() {
-  const dispatch = useDispatch();
   const router = useRouter();
-  const auth = useSelector((state: RootState) => state.auth);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,15 +26,11 @@ export default function RegisterPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  const [login] = useLoginMutation();
   const [signup, { isLoading: isSigningUp }] = useSignupMutation();
 
   useEffect(() => {
     setMounted(true);
-    if (auth.token) {
-      router.push('/dashboard');
-    }
-  }, [auth.token, router]);
+  }, []);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,10 +49,8 @@ export default function RegisterPage() {
         role,
       }).unwrap();
 
-      // Automatically login
-      const loginRes = await login({ email, password }).unwrap();
-      dispatch(setCredentials(loginRes.data));
-      router.push('/dashboard');
+      // Redirect to login page
+      router.push('/login');
     } catch (err: any) {
       setFormError(err.data?.message || 'Registration failed.');
     }
