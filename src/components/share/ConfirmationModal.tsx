@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React from "react"
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,20 +8,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { HelpCircle } from "lucide-react"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { HelpCircle } from "lucide-react";
 
 interface ConfirmationModalProps {
-  isOpen: boolean
-  onClose: () => void
-  title: string
-  description: string
-  confirmText?: string
-  cancelText?: string
-  onConfirm: () => void
-  onCancel?: () => void
-  icon?: React.ReactNode
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  description: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm: () => void;
+  onCancel?: () => void;
+  icon?: React.ReactNode;
 }
 
 const ConfirmationModal = ({
@@ -36,15 +36,15 @@ const ConfirmationModal = ({
   icon,
 }: ConfirmationModalProps) => {
   const handleConfirm = () => {
-    onConfirm()
-  }
+    onConfirm();
+  };
 
   const handleCancel = () => {
     if (onCancel) {
-      onCancel()
+      onCancel();
     }
-    onClose()
-  }
+    onClose();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -64,7 +64,7 @@ const ConfirmationModal = ({
             </DialogHeader>
           </div>
         </div>
-        
+
         <DialogFooter className="flex flex-row gap-2 p-4 bg-gray-50/50 sm:justify-center border-t border-gray-100">
           <Button
             variant="outline"
@@ -82,7 +82,7 @@ const ConfirmationModal = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default ConfirmationModal
+export default ConfirmationModal;
