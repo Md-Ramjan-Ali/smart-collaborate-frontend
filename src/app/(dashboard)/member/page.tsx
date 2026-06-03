@@ -1,0 +1,150 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { RootState } from '../../../lib/store';
+import { logout } from '../../../lib/features/auth/authSlice';
+import { useLogoutMutation, useGetMyTasksQuery, useUpdateTaskMutation } from '../../../lib/services/api';
+import { Layers, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
+import MemberSidebar from './_components/MemberSidebar';
+
+export default function MemberMyAssignmentsPage() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state: RootState) => state.auth);
+
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
+    if (savedTheme) { setTheme(savedTheme); document.documentElement.className = savedTheme; }
+    else document.documentElement.className = 'dark';
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next); localStorage.setItem('theme', next); document.documentElement.className = next;
+  };
+
+  const [logoutApi] = useLogoutMutation();
+  const [updateTaskApi] = useUpdateTaskMutation();
+  const { data: myTasksData, refetch: refetchMyTasks } = useGetMyTasksQuery(undefined);
+
+  const handleLogout = async () => {
+    try { await logoutApi(undefined).unwrap(); } catch {}
+    dispatch(logout()); router.push('/login');
+  };
+
+  const handleStatusChange = async (taskId: string, newStatus: string) => {
+    try {
+      const res = await updateTaskApi({ id: taskId, status: newStatus }).unwrap();
+      if (res.data?.warning) {
+        toast.warning(res.data.warning, {
+          duration: 10000,
+          icon: <AlertTriangle className="w-4 h-4" />,
+        });
+      }
+      refetchMyTasks();
+    } catch (err: any) { toast.error(err.data?.message || 'Failed to update task status.'); }
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+      <header className="md:hidden flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center">
+            <Layers className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-extrabold text-sm text-slate-900 dark:text-white">Smart Collaborate</span>
+        </div>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isSidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
+          </svg>
+        </button>
+      </header>
+
+      <MemberSidebar auth={auth} isSidebarOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} theme={theme} onToggleTheme={toggleTheme} onLogout={handleLogout} />
+
+      <main className="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full md:h-full md:ml-64">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">My Tasks</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs">Personal dashboard listing your active assignments.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* To Do Column */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col space-y-4 shadow-sm">
+              <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block border-b border-slate-200 dark:border-slate-800 pb-2">To Do Pipeline</span>
+              <div className="space-y-3 overflow-y-auto max-h-[450px]">
+                {myTasksData?.data?.todo?.length === 0 ? (
+                  <div className="text-center py-10 text-xs text-slate-500">No tasks in your queue.</div>
+                ) : (
+                  myTasksData?.data?.todo?.map((task: any) => (
+                    <div key={task.id} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-slate-200 dark:bg-slate-500/10 text-slate-600 dark:text-slate-400">{task.priority} Priority</span>
+                        <span className="text-[10px] text-slate-500 font-bold">{new Date(task.dueDate).toLocaleDateString()}</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">{task.title}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block line-clamp-2 mt-0.5">{task.description}</span>
+                        <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 block mt-2">Project: {task.project?.title}</span>
+                      </div>
+                      <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <span className="text-[9px] text-slate-500 font-bold">Update Status:</span>
+                        <select value={task.status} onChange={(e) => handleStatusChange(task.id, e.target.value)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 px-2 text-[10px] font-bold outline-none cursor-pointer text-slate-700 dark:text-slate-300">
+                          <option value="TO_DO">To Do</option>
+                          <option value="IN_PROGRESS">In Progress</option>
+                          <option value="UNDER_REVIEW">Under Review</option>
+                          <option value="COMPLETED">Completed</option>
+                        </select>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* In Progress Column */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col space-y-4 shadow-sm">
+              <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block border-b border-slate-200 dark:border-slate-800 pb-2">Active In-Progress</span>
+              <div className="space-y-3 overflow-y-auto max-h-[450px]">
+                {myTasksData?.data?.inProgress?.length === 0 ? (
+                  <div className="text-center py-10 text-xs text-slate-500">No active tasks.</div>
+                ) : (
+                  myTasksData?.data?.inProgress?.map((task: any) => (
+                    <div key={task.id} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-slate-200 dark:bg-slate-500/10 text-slate-600 dark:text-slate-400">{task.priority} Priority</span>
+                        <span className="text-[10px] text-slate-500 font-bold">{new Date(task.dueDate).toLocaleDateString()}</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">{task.title}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block line-clamp-2 mt-0.5">{task.description}</span>
+                        <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 block mt-2">Project: {task.project?.title}</span>
+                      </div>
+                      <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <span className="text-[9px] text-slate-500 font-bold">Update Status:</span>
+                        <select value={task.status} onChange={(e) => handleStatusChange(task.id, e.target.value)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 px-2 text-[10px] font-bold outline-none cursor-pointer text-slate-700 dark:text-slate-300">
+                          <option value="TO_DO">To Do</option>
+                          <option value="IN_PROGRESS">In Progress</option>
+                          <option value="UNDER_REVIEW">Under Review</option>
+                          <option value="COMPLETED">Completed</option>
+                        </select>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
