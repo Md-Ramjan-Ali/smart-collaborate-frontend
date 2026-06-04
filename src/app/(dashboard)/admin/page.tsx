@@ -10,6 +10,7 @@ import { useGetDashboardMetaQuery } from '../../../lib/services/dashboardApi';
 import { Briefcase, CheckCircle, Clock, ListTodo, Layers, Sparkles, TrendingUp, Sun, Moon } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as ChartTooltip } from 'recharts';
 import AdminSidebar from './_components/AdminSidebar';
+import Header from '@/components/share/Header';
 
 const CHART_COLORS = ['#3b82f6', '#f59e0b', '#a855f7', '#10b981'];
 
@@ -49,34 +50,24 @@ export default function AdminOverviewPage() {
 
   return (
     <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
-      {/* Mobile Top Bar */}
-      <header className="md:hidden flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-extrabold text-sm text-slate-900 dark:text-white">Smart Collaborate</span>
-        </div>
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isSidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
-          </svg>
-        </button>
-      </header>
-
+      
       <AdminSidebar
         auth={auth}
         isSidebarOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onLogout={handleLogout}
       />
 
-      <main className="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full md:h-full md:ml-64">
+      <div className="flex-1 flex flex-col md:h-full md:overflow-hidden md:ml-64">
+        <Header
+          title="Workspace Dashboard"
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onLogout={handleLogout}
+          auth={auth}
+        />
+
+        <main className="flex-1 p-6 overflow-y-auto max-w-7xl w-full">
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -228,6 +219,7 @@ export default function AdminOverviewPage() {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

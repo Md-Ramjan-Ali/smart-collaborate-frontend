@@ -3,25 +3,18 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Layers, TrendingUp, Briefcase, LogOut, Sun, Moon } from 'lucide-react';
-import NotificationCenter from '@/components/share/NotificationCenter';
+import { Layers, TrendingUp, Briefcase } from 'lucide-react';
 
 interface AdminSidebarProps {
   auth: any;
   isSidebarOpen: boolean;
   onClose: () => void;
-  theme: 'dark' | 'light';
-  onToggleTheme: () => void;
-  onLogout: () => void;
 }
 
 export default function AdminSidebar({
   auth,
   isSidebarOpen,
   onClose,
-  theme,
-  onToggleTheme,
-  onLogout,
 }: AdminSidebarProps) {
   const pathname = usePathname();
 
@@ -38,7 +31,7 @@ export default function AdminSidebar({
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-slate-100 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col p-5 shrink-0 transition-all duration-300 h-screen ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-slate-100 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col p-5 shrink-0 transition-all duration-305 h-screen ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
@@ -84,35 +77,15 @@ export default function AdminSidebar({
           </Link>
         </nav>
 
-        {/* Profile Card */}
-        <div className="mt-auto pt-6 border-t border-slate-200 dark:border-slate-800">
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-955 border border-slate-202 dark:border-slate-800 transition-colors duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 uppercase shrink-0">
-                {auth.user?.name?.charAt(0)}
-              </div>
-              <div className="min-w-0 flex-1">
-                <span className="font-bold text-xs block truncate text-slate-800 dark:text-slate-202">{auth.user?.name}</span>
-                <span className="text-[10px] block truncate text-slate-555 dark:text-slate-400">{auth.user?.email}</span>
-              </div>
+        {/* Profile Info Footer */}
+        <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-8 h-8 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 flex items-center justify-center font-bold text-xs text-indigo-600 dark:text-indigo-400 uppercase shrink-0">
+              {auth.user?.name?.charAt(0)}
             </div>
-            <div className="mt-3.5 pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold tracking-wider bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
-                {auth.user?.role}
-              </span>
-              <div className="flex items-center gap-1.5">
-                <NotificationCenter />
-                <button
-                  onClick={onToggleTheme}
-                  className="p-1.5 rounded text-slate-500 hover:text-indigo-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
-                  title="Toggle Mode"
-                >
-                  {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-                </button>
-                <button onClick={onLogout} className="text-slate-500 hover:text-rose-500 transition cursor-pointer" title="Log Out">
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-xs block truncate text-slate-800 dark:text-slate-200">{auth.user?.name}</span>
+              <span className="text-[10px] block truncate text-slate-500 dark:text-slate-400 uppercase font-semibold">{auth.user?.role}</span>
             </div>
           </div>
         </div>

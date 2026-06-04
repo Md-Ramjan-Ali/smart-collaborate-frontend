@@ -3,19 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Layers, ListTodo, Briefcase, LogOut, Sun, Moon } from 'lucide-react';
-import NotificationCenter from '@/components/share/NotificationCenter';
+import { Layers, ListTodo, Briefcase } from 'lucide-react';
 
 interface MemberSidebarProps {
   auth: any;
   isSidebarOpen: boolean;
   onClose: () => void;
-  theme: 'dark' | 'light';
-  onToggleTheme: () => void;
-  onLogout: () => void;
 }
 
-export default function MemberSidebar({ auth, isSidebarOpen, onClose, theme, onToggleTheme, onLogout }: MemberSidebarProps) {
+export default function MemberSidebar({ auth, isSidebarOpen, onClose }: MemberSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -48,30 +44,15 @@ export default function MemberSidebar({ auth, isSidebarOpen, onClose, theme, onT
           </Link>
         </nav>
 
-        <div className="mt-auto pt-6 border-t border-slate-200 dark:border-slate-800">
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-955 border border-slate-202 dark:border-slate-800 transition-colors duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 uppercase shrink-0">
-                {auth.user?.name?.charAt(0)}
-              </div>
-              <div className="min-w-0 flex-1">
-                <span className="font-bold text-xs block truncate text-slate-800 dark:text-slate-202">{auth.user?.name}</span>
-                <span className="text-[10px] block truncate text-slate-555 dark:text-slate-400">{auth.user?.email}</span>
-              </div>
+        {/* Profile Info Footer */}
+        <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-8 h-8 rounded-full bg-emerald-500/10 dark:bg-emerald-500/5 flex items-center justify-center font-bold text-xs text-emerald-600 dark:text-emerald-400 uppercase shrink-0">
+              {auth.user?.name?.charAt(0)}
             </div>
-            <div className="mt-3.5 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
-                TEAM_MEMBER
-              </span>
-              <div className="flex items-center gap-1.5">
-                <NotificationCenter />
-                <button onClick={onToggleTheme} className="p-1.5 rounded text-slate-500 hover:text-indigo-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer" title="Toggle Mode">
-                  {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-                </button>
-                <button onClick={onLogout} className="text-slate-500 hover:text-rose-500 transition cursor-pointer" title="Log Out">
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-xs block truncate text-slate-800 dark:text-slate-202">{auth.user?.name}</span>
+              <span className="text-[10px] block truncate text-slate-500 dark:text-slate-400 uppercase font-semibold">{auth.user?.role}</span>
             </div>
           </div>
         </div>
