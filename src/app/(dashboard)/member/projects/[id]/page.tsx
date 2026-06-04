@@ -12,6 +12,7 @@ import { Layers, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import MemberSidebar from '../../_components/MemberSidebar';
 import MemberTaskPipeline from '../_components/MemberTaskPipeline';
+import TaskDetailsModal from '../../../../../components/share/TaskDetailsModal';
 
 export default function MemberProjectDetailsPage() {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ export default function MemberProjectDetailsPage() {
   const [sortField, setSortField] = useState('dueDate');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(1);
+  const [selectedTaskDetails, setSelectedTaskDetails] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
@@ -163,6 +165,7 @@ export default function MemberProjectDetailsPage() {
               page={page}
               setPage={setPage}
               onStatusChange={handleStatusChange}
+              onViewDetails={(taskId, taskTitle) => setSelectedTaskDetails({ id: taskId, title: taskTitle })}
             />
           </div>
         ) : (
@@ -171,6 +174,15 @@ export default function MemberProjectDetailsPage() {
           </div>
         )}
       </main>
+
+      {selectedTaskDetails && (
+        <TaskDetailsModal
+          isOpen={!!selectedTaskDetails}
+          onClose={() => setSelectedTaskDetails(null)}
+          taskId={selectedTaskDetails.id}
+          taskTitle={selectedTaskDetails.title}
+        />
+      )}
     </div>
   );
 }

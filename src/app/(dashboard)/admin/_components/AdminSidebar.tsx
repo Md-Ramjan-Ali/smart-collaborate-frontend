@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Layers, TrendingUp, Briefcase, LogOut, Sun, Moon } from 'lucide-react';
+import NotificationCenter from '@/components/share/NotificationCenter';
 
 interface AdminSidebarProps {
   auth: any;
@@ -100,6 +101,7 @@ export default function AdminSidebar({
                 {auth.user?.role}
               </span>
               <div className="flex items-center gap-1.5">
+                <NotificationCenter />
                 <button
                   onClick={onToggleTheme}
                   className="p-1.5 rounded text-slate-500 hover:text-indigo-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"

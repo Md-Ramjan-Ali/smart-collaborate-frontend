@@ -34,6 +34,7 @@ import InviteMemberModal from "../_components/InviteMemberModal";
 import TeamLoadAllocation from "../_components/TeamLoadAllocation";
 import TaskPipeline from "../_components/TaskPipeline";
 import ConfirmationModal from "@/components/share/ConfirmationModal";
+import TaskDetailsModal from "../../../../../components/share/TaskDetailsModal";
 
 export default function AdminProjectDetailsPage() {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ export default function AdminProjectDetailsPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [showInviteMember, setShowInviteMember] = useState(false);
+  const [selectedTaskDetails, setSelectedTaskDetails] = useState<{ id: string; title: string } | null>(null);
 
   // Confirmation modal state
   const [confirmDeleteProject, setConfirmDeleteProject] = useState<
@@ -285,6 +287,7 @@ export default function AdminProjectDetailsPage() {
               setPage={setPage}
               onStatusChange={handleStatusChange}
               onDeleteTask={handleDeleteTask}
+              onViewDetails={(taskId, taskTitle) => setSelectedTaskDetails({ id: taskId, title: taskTitle })}
             />
           </div>
         ) : (
@@ -368,6 +371,15 @@ export default function AdminProjectDetailsPage() {
         cancelText="Cancel"
         onConfirm={confirmTaskDelete}
       />
+
+      {selectedTaskDetails && (
+        <TaskDetailsModal
+          isOpen={!!selectedTaskDetails}
+          onClose={() => setSelectedTaskDetails(null)}
+          taskId={selectedTaskDetails.id}
+          taskTitle={selectedTaskDetails.title}
+        />
+      )}
     </div>
   );
 }

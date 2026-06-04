@@ -15,6 +15,7 @@ interface MemberTaskPipelineProps {
   sortDir: 'asc' | 'desc'; setSortDir: (v: 'asc' | 'desc') => void;
   page: number; setPage: (p: number) => void;
   onStatusChange: (taskId: string, newStatus: string) => void;
+  onViewDetails: (taskId: string, taskTitle: string) => void;
 }
 
 export default function MemberTaskPipeline({
@@ -27,6 +28,7 @@ export default function MemberTaskPipeline({
   sortDir, setSortDir,
   page, setPage,
   onStatusChange,
+  onViewDetails,
 }: MemberTaskPipelineProps) {
   return (
     <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 space-y-4">
@@ -98,8 +100,11 @@ export default function MemberTaskPipeline({
             ) : (
               tasksData.data.data.map((task: any) => (
                 <tr key={task.id} className="border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition">
-                  <td className="py-4 pr-3 max-w-[200px]">
-                    <span className="font-bold text-slate-800 dark:text-slate-200 block truncate">{task.title}</span>
+                  <td 
+                    onClick={() => onViewDetails(task.id, task.title)}
+                    className="py-4 pr-3 max-w-[200px] cursor-pointer group"
+                  >
+                    <span className="font-bold text-slate-800 dark:text-slate-200 block truncate group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition">{task.title}</span>
                     <span className="text-[10px] text-slate-500 dark:text-slate-400 block line-clamp-1 mt-0.5">{task.description || 'No description.'}</span>
                   </td>
                   <td className="py-4 text-slate-600 dark:text-slate-300 font-semibold">{task.assignee?.name || 'Unassigned'}</td>
