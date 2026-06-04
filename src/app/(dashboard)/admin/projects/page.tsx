@@ -5,13 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { RootState } from '../../../../lib/store';
 import { logout } from '../../../../lib/features/auth/authSlice';
+import { useLogoutMutation, useGetAllUsersQuery } from '../../../../lib/services/authApi';
 import {
-  useLogoutMutation,
   useGetProjectsQuery,
   useCreateProjectMutation,
   useDeleteProjectMutation,
-  useGetAllUsersQuery,
-} from '../../../../lib/services/api';
+} from '../../../../lib/services/projectApi';
 
 import { Layers, Plus, Calendar, Users, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';

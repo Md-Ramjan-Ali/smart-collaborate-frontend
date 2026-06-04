@@ -5,10 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { RootState } from '../../../../lib/store';
 import { logout } from '../../../../lib/features/auth/authSlice';
-import {
-  useLogoutMutation,
-  useGetProjectsQuery,
-} from '../../../../lib/services/api';
+import { useLogoutMutation } from '../../../../lib/services/authApi';
+import { useGetProjectsQuery } from '../../../../lib/services/projectApi';
 import { Layers, Calendar, Users } from 'lucide-react';
 import MemberSidebar from '../_components/MemberSidebar';
 

@@ -5,12 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter, useParams } from 'next/navigation';
 import { RootState } from '../../../../../lib/store';
 import { logout } from '../../../../../lib/features/auth/authSlice';
-import {
-  useLogoutMutation,
-  useGetProjectByIdQuery,
-  useGetTasksQuery,
-  useUpdateTaskMutation,
-} from '../../../../../lib/services/api';
+import { useLogoutMutation } from '../../../../../lib/services/authApi';
+import { useGetProjectByIdQuery } from '../../../../../lib/services/projectApi';
+import { useGetTasksQuery, useUpdateTaskMutation } from '../../../../../lib/services/taskApi';
 import { Layers, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import MemberSidebar from '../../_components/MemberSidebar';

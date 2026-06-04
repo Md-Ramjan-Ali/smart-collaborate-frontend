@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSignupMutation } from '../../../lib/services/api';
+import { useSignupMutation } from '../../../lib/services/authApi';
 import Link from 'next/link';
 
 import {

@@ -5,18 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter, useParams } from "next/navigation";
 import { RootState } from "../../../../../lib/store";
 import { logout } from "../../../../../lib/features/auth/authSlice";
+import { useLogoutMutation, useGetAllUsersQuery } from "../../../../../lib/services/authApi";
 import {
-  useLogoutMutation,
   useGetProjectByIdQuery,
   useAddTeamMemberMutation,
   useDeleteProjectMutation,
+} from "../../../../../lib/services/projectApi";
+import {
   useGetTasksQuery,
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useDeleteTaskMutation,
-  useGetAllUsersQuery,
-  useGetProjectWorkloadQuery,
-} from "../../../../../lib/services/api";
+} from "../../../../../lib/services/taskApi";
+import { useGetProjectWorkloadQuery } from "../../../../../lib/services/dashboardApi";
 
 import {
   AlertTriangle,

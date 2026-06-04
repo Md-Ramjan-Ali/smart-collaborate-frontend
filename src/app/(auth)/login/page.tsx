@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { RootState } from '../../../lib/store';
 import { setCredentials } from '../../../lib/features/auth/authSlice';
-import { useLoginMutation, useSignupMutation } from '../../../lib/services/api';
+import { useLoginMutation, useSignupMutation } from '../../../lib/services/authApi';
 import Link from 'next/link';
 
 import {
