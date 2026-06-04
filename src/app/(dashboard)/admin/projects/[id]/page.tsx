@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter, useParams } from 'next/navigation';
-import { RootState } from '../../../../../lib/store';
-import { logout } from '../../../../../lib/features/auth/authSlice';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter, useParams } from "next/navigation";
+import { RootState } from "../../../../../lib/store";
+import { logout } from "../../../../../lib/features/auth/authSlice";
 import {
   useLogoutMutation,
   useGetProjectByIdQuery,
@@ -16,16 +16,23 @@ import {
   useDeleteTaskMutation,
   useGetAllUsersQuery,
   useGetProjectWorkloadQuery,
-} from '../../../../../lib/services/api';
+} from "../../../../../lib/services/api";
 
-import { AlertTriangle, Layers, Plus, Calendar, Users, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
-import AdminSidebar from '../../_components/AdminSidebar';
-import CreateTaskModal from '../_components/CreateTaskModal';
-import InviteMemberModal from '../_components/InviteMemberModal';
-import TeamLoadAllocation from '../_components/TeamLoadAllocation';
-import TaskPipeline from '../_components/TaskPipeline';
-import ConfirmationModal from '@/components/share/ConfirmationModal';
+import {
+  AlertTriangle,
+  Layers,
+  Plus,
+  Calendar,
+  Users,
+  Trash2,
+} from "lucide-react";
+import { toast } from "sonner";
+import AdminSidebar from "../../_components/AdminSidebar";
+import CreateTaskModal from "../_components/CreateTaskModal";
+import InviteMemberModal from "../_components/InviteMemberModal";
+import TeamLoadAllocation from "../_components/TeamLoadAllocation";
+import TaskPipeline from "../_components/TaskPipeline";
+import ConfirmationModal from "@/components/share/ConfirmationModal";
 
 export default function AdminProjectDetailsPage() {
   const dispatch = useDispatch();
@@ -34,23 +41,23 @@ export default function AdminProjectDetailsPage() {
   const id = params.id as string;
   const auth = useSelector((state: RootState) => state.auth);
 
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
+    const savedTheme = localStorage.getItem("theme") as "dark" | "light";
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.className = savedTheme;
     } else {
-      document.documentElement.className = 'dark';
+      document.documentElement.className = "dark";
     }
   }, []);
 
   const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
+    const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
-    localStorage.setItem('theme', next);
+    localStorage.setItem("theme", next);
     document.documentElement.className = next;
   };
 
@@ -59,27 +66,34 @@ export default function AdminProjectDetailsPage() {
   const [showInviteMember, setShowInviteMember] = useState(false);
 
   // Confirmation modal state
-  const [confirmDeleteProject, setConfirmDeleteProject] = useState<string | null>(null);
-  const [confirmDeleteTask, setConfirmDeleteTask] = useState<string | null>(null);
+  const [confirmDeleteProject, setConfirmDeleteProject] = useState<
+    string | null
+  >(null);
+  const [confirmDeleteTask, setConfirmDeleteTask] = useState<string | null>(
+    null,
+  );
 
-  const [searchVal, setSearchVal] = useState('');
-  const [filterPriority, setFilterPriority] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
-  const [filterAssignee, setFilterAssignee] = useState('');
-  const [sortField, setSortField] = useState('dueDate');
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [searchVal, setSearchVal] = useState("");
+  const [filterPriority, setFilterPriority] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterAssignee, setFilterAssignee] = useState("");
+  const [sortField, setSortField] = useState("dueDate");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(1);
 
   const [logoutApi] = useLogoutMutation();
-  const [createTaskApi, { isLoading: isCreatingTask }] = useCreateTaskMutation();
+  const [createTaskApi, { isLoading: isCreatingTask }] =
+    useCreateTaskMutation();
   const [updateTaskApi] = useUpdateTaskMutation();
   const [deleteTaskApi] = useDeleteTaskMutation();
   const [addTeamMemberApi] = useAddTeamMemberMutation();
   const [deleteProjectApi] = useDeleteProjectMutation();
 
   const { data: usersData } = useGetAllUsersQuery(undefined);
-  const { data: projectDetails, refetch: refetchProjectDetails } = useGetProjectByIdQuery(id, { skip: !id });
-  const { data: workloadData, refetch: refetchWorkload } = useGetProjectWorkloadQuery(id, { skip: !id });
+  const { data: projectDetails, refetch: refetchProjectDetails } =
+    useGetProjectByIdQuery(id, { skip: !id });
+  const { data: workloadData, refetch: refetchWorkload } =
+    useGetProjectWorkloadQuery(id, { skip: !id });
   const { data: tasksData, refetch: refetchTasks } = useGetTasksQuery(
     {
       projectId: id || undefined,
@@ -90,9 +104,9 @@ export default function AdminProjectDetailsPage() {
       sortBy: sortField,
       sortOrder: sortDir,
       page: page.toString(),
-      limit: '5',
+      limit: "5",
     },
-    { skip: !id }
+    { skip: !id },
   );
 
   const handleLogout = async () => {
@@ -100,23 +114,18 @@ export default function AdminProjectDetailsPage() {
       await logoutApi(undefined).unwrap();
     } catch {}
     dispatch(logout());
-    router.push('/login');
-  };
-
-  const handleDeleteProject = async (projId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setConfirmDeleteProject(projId);
+    router.push("/login");
   };
 
   const confirmProjectDelete = async () => {
     if (!confirmDeleteProject) return;
     try {
       await deleteProjectApi(confirmDeleteProject).unwrap();
-      toast.success('Project deleted successfully.');
-      const baseRoute = auth.user?.role === 'ADMIN' ? '/admin' : '/manager';
+      toast.success("Project deleted successfully.");
+      const baseRoute = auth.user?.role === "ADMIN" ? "/admin" : "/manager";
       router.push(`${baseRoute}/projects`);
     } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to delete project.');
+      toast.error(err.data?.message || "Failed to delete project.");
     } finally {
       setConfirmDeleteProject(null);
     }
@@ -124,7 +133,10 @@ export default function AdminProjectDetailsPage() {
 
   const handleStatusChange = async (taskId: string, newStatus: any) => {
     try {
-      const res = await updateTaskApi({ id: taskId, status: newStatus }).unwrap();
+      const res = await updateTaskApi({
+        id: taskId,
+        status: newStatus,
+      }).unwrap();
       if (res.data?.warning) {
         toast.warning(res.data.warning, {
           duration: 10000,
@@ -135,7 +147,7 @@ export default function AdminProjectDetailsPage() {
       refetchTasks();
       if (workloadData) refetchWorkload();
     } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to update task status.');
+      toast.error(err.data?.message || "Failed to update task status.");
     }
   };
 
@@ -149,16 +161,16 @@ export default function AdminProjectDetailsPage() {
       await deleteTaskApi(confirmDeleteTask).unwrap();
       refetchProjectDetails();
       refetchTasks();
-      toast.success('Task deleted.');
+      toast.success("Task deleted.");
     } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to delete task.');
+      toast.error(err.data?.message || "Failed to delete task.");
     } finally {
       setConfirmDeleteTask(null);
     }
   };
 
   const handleBackToProjects = () => {
-    const baseRoute = auth.user?.role === 'ADMIN' ? '/admin' : '/manager';
+    const baseRoute = auth.user?.role === "ADMIN" ? "/admin" : "/manager";
     router.push(`${baseRoute}/projects`);
   };
 
@@ -170,18 +182,29 @@ export default function AdminProjectDetailsPage() {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center">
             <Layers className="w-4 h-4 text-white" />
           </div>
-          <span className="font-extrabold text-sm text-slate-900 dark:text-white">Smart Collaborate</span>
+          <span className="font-extrabold text-sm text-slate-900 dark:text-white">
+            Smart Collaborate
+          </span>
         </div>
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="p-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
         >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d={isSidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+              d={
+                isSidebarOpen
+                  ? "M6 18L18 6M6 6l12 12"
+                  : "M4 6h16M4 12h16M4 18h16"
+              }
             />
           </svg>
         </button>
@@ -238,7 +261,9 @@ export default function AdminProjectDetailsPage() {
               </div>
             </div>
 
-            {workloadData?.data && <TeamLoadAllocation workloadData={workloadData.data} />}
+            {workloadData?.data && (
+              <TeamLoadAllocation workloadData={workloadData.data} />
+            )}
 
             <TaskPipeline
               tasksData={tasksData}
@@ -278,7 +303,10 @@ export default function AdminProjectDetailsPage() {
           onClose={() => setShowCreateTask(false)}
           onSubmit={async (payload) => {
             try {
-              const res = await createTaskApi({ ...payload, projectId: id }).unwrap();
+              const res = await createTaskApi({
+                ...payload,
+                projectId: id,
+              }).unwrap();
               if (res.data?.warning) {
                 toast.warning(res.data.warning, {
                   duration: 10000,
@@ -289,9 +317,9 @@ export default function AdminProjectDetailsPage() {
               refetchProjectDetails();
               refetchTasks();
               if (workloadData) refetchWorkload();
-              toast.success('Task created successfully!');
+              toast.success("Task created successfully!");
             } catch (err: any) {
-              setFormError(err.data?.message || 'Failed to create task.');
+              setFormError(err.data?.message || "Failed to create task.");
             }
           }}
         />
@@ -310,9 +338,9 @@ export default function AdminProjectDetailsPage() {
               setShowInviteMember(false);
               refetchProjectDetails();
               if (workloadData) refetchWorkload();
-              toast.success('Member added to project!');
+              toast.success("Member added to project!");
             } catch (err: any) {
-              setFormError(err.data?.message || 'Failed to add member.');
+              setFormError(err.data?.message || "Failed to add member.");
             }
           }}
         />
