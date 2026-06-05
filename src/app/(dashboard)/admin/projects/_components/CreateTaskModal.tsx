@@ -36,7 +36,7 @@ export default function CreateTaskModal({ projectDetails, formError, setFormErro
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-sm z-40 flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
           <span className="font-bold text-sm text-slate-800 dark:text-slate-200">Create Task</span>

@@ -17,9 +17,9 @@ export default function MemberSidebar({ auth, isSidebarOpen, onClose }: MemberSi
   return (
     <>
       {isSidebarOpen && (
-        <div onClick={onClose} className="md:hidden fixed inset-0 bg-black/50 z-30 backdrop-blur-xs" />
+        <div onClick={onClose} className="md:hidden fixed inset-0 bg-black/50 z-[55] backdrop-blur-xs" />
       )}
-      <aside className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-slate-100 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col p-5 shrink-0 transition-all duration-300 h-screen ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+      <aside className={`fixed top-0 bottom-0 left-0 z-[60] w-64 bg-slate-100 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col p-5 shrink-0 transition-all duration-300 h-screen ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">

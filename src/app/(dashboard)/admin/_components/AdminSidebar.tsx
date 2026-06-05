@@ -26,12 +26,12 @@ export default function AdminSidebar({
       {isSidebarOpen && (
         <div
           onClick={onClose}
-          className="md:hidden fixed inset-0 bg-black/50 z-30 backdrop-blur-xs"
+          className="md:hidden fixed inset-0 bg-black/50 z-[55] backdrop-blur-xs"
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-slate-100 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col p-5 shrink-0 transition-all duration-305 h-screen ${
+        className={`fixed top-0 bottom-0 left-0 z-[60] w-64 bg-slate-100 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col p-5 shrink-0 transition-all duration-305 h-screen ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >

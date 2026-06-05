@@ -33,6 +33,7 @@ import CreateTaskModal from "../_components/CreateTaskModal";
 import InviteMemberModal from "../_components/InviteMemberModal";
 import TeamLoadAllocation from "../_components/TeamLoadAllocation";
 import TaskPipeline from "../_components/TaskPipeline";
+import EditTaskModal from "../_components/EditTaskModal";
 import ConfirmationModal from "@/components/share/ConfirmationModal";
 import TaskDetailsModal from "../../../../../components/share/TaskDetailsModal";
 import Header from "@/components/share/Header";
@@ -70,6 +71,7 @@ export default function AdminProjectDetailsPage() {
   const [confirmDeleteProject, setConfirmDeleteProject] = useState<string | null>(null);
   const [confirmDeleteTask, setConfirmDeleteTask] = useState<string | null>(null);
   const [selectedTaskDetails, setSelectedTaskDetails] = useState<any | null>(null);
+  const [editingTask, setEditingTask] = useState<any | null>(null);
 
   const [searchVal, setSearchVal] = useState("");
   const [filterPriority, setFilterPriority] = useState("");
@@ -82,7 +84,7 @@ export default function AdminProjectDetailsPage() {
   const [logoutApi] = useLogoutMutation();
   const [createTaskApi, { isLoading: isCreatingTask }] =
     useCreateTaskMutation();
-  const [updateTaskApi] = useUpdateTaskMutation();
+  const [updateTaskApi, { isLoading: isUpdatingTask }] = useUpdateTaskMutation();
   const [deleteTaskApi] = useDeleteTaskMutation();
   const [addTeamMemberApi] = useAddTeamMemberMutation();
   const [deleteProjectApi] = useDeleteProjectMutation();
@@ -257,6 +259,10 @@ export default function AdminProjectDetailsPage() {
               onStatusChange={handleStatusChange}
               onDeleteTask={handleDeleteTask}
               onViewDetails={(taskId, taskTitle) => setSelectedTaskDetails({ id: taskId, title: taskTitle })}
+              onEditTask={(task) => {
+                setFormError(null);
+                setEditingTask(task);
+              }}
             />
           </div>
         ) : (
@@ -267,6 +273,35 @@ export default function AdminProjectDetailsPage() {
       </main>
 
       {/* Modals */}
+      {editingTask && projectDetails?.data && (
+        <EditTaskModal
+          task={editingTask}
+          projectDetails={projectDetails.data}
+          formError={formError}
+          setFormError={setFormError}
+          isUpdatingTask={isUpdatingTask}
+          onClose={() => setEditingTask(null)}
+          onSubmit={async (payload) => {
+            try {
+              const res = await updateTaskApi(payload).unwrap();
+              if (res.data?.warning) {
+                toast.warning(res.data.warning, {
+                  duration: 10000,
+                  icon: <AlertTriangle className="w-4 h-4" />,
+                });
+              }
+              setEditingTask(null);
+              refetchProjectDetails();
+              refetchTasks();
+              if (workloadData) refetchWorkload();
+              toast.success("Task updated successfully!");
+            } catch (err: any) {
+              setFormError(err.data?.message || "Failed to update task.");
+            }
+          }}
+        />
+      )}
+ 
       {showCreateTask && projectDetails?.data && (
         <CreateTaskModal
           projectDetails={projectDetails.data}

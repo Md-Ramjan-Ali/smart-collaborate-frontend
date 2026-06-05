@@ -105,10 +105,9 @@ export default function TaskDetailsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div 
         onClick={onClose}
-        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-slate-950/20 backdrop-blur-sm transition-opacity"
       />
 
       {/* Modal Card */}

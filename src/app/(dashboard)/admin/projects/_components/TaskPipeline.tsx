@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, Trash2 } from 'lucide-react';
+import { Search, Trash2, Edit } from 'lucide-react';
 
 interface TaskPipelineProps {
   tasksData: any;
@@ -16,6 +16,7 @@ interface TaskPipelineProps {
   onStatusChange: (taskId: string, newStatus: string) => void;
   onDeleteTask: (taskId: string) => void;
   onViewDetails: (taskId: string, taskTitle: string) => void;
+  onEditTask: (task: any) => void;
 }
 
 export default function TaskPipeline({
@@ -27,7 +28,7 @@ export default function TaskPipeline({
   sortField, setSortField,
   sortDir, setSortDir,
   page, setPage,
-  onStatusChange, onDeleteTask, onViewDetails,
+  onStatusChange, onDeleteTask, onViewDetails, onEditTask,
 }: TaskPipelineProps) {
   return (
     <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 space-y-4">
@@ -133,9 +134,14 @@ export default function TaskPipeline({
                     </select>
                   </td>
                   <td className="py-4 text-right">
-                    <button onClick={() => onDeleteTask(task.id)} className="p-1 rounded bg-white dark:bg-slate-950 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition border border-slate-200 dark:border-slate-800 cursor-pointer">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button onClick={() => onEditTask(task)} className="p-1 rounded bg-white dark:bg-slate-950 hover:bg-indigo-500/25 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition border border-slate-200 dark:border-slate-800 cursor-pointer" title="Edit Task">
+                        <Edit className="w-3.5 h-3.5" />
+                      </button>
+                      <button onClick={() => onDeleteTask(task.id)} className="p-1 rounded bg-white dark:bg-slate-950 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition border border-slate-200 dark:border-slate-800 cursor-pointer" title="Delete Task">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

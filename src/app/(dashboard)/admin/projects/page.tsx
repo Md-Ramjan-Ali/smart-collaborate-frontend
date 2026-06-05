@@ -9,10 +9,12 @@ import { useLogoutMutation, useGetAllUsersQuery } from '../../../../lib/services
 import {
   useGetProjectsQuery,
   useCreateProjectMutation,
+  useUpdateProjectMutation,
   useDeleteProjectMutation,
 } from '../../../../lib/services/projectApi';
+import EditProjectModal from './_components/EditProjectModal';
 
-import { Layers, Plus, Calendar, Users, Trash2 } from 'lucide-react';
+import { Layers, Plus, Calendar, Users, Trash2, Search, Edit } from 'lucide-react';
 import { toast } from 'sonner';
 import AdminSidebar from '../_components/AdminSidebar';
 import CreateProjectModal from './_components/CreateProjectModal';
@@ -47,9 +49,12 @@ export default function AdminProjectsPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [confirmDeleteProject, setConfirmDeleteProject] = useState<string | null>(null);
+  const [searchProjectTerm, setSearchProjectTerm] = useState('');
+  const [editingProject, setEditingProject] = useState<any | null>(null);
 
   const [logoutApi] = useLogoutMutation();
   const [createProject, { isLoading: isCreatingProject }] = useCreateProjectMutation();
+  const [updateProject, { isLoading: isUpdatingProject }] = useUpdateProjectMutation();
   const [deleteProjectApi] = useDeleteProjectMutation();
 
   const { data: projectsData, refetch: refetchProjects } = useGetProjectsQuery(undefined);
@@ -112,24 +117,37 @@ export default function AdminProjectsPage() {
               <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Projects Registry</h1>
               <p className="text-slate-500 dark:text-slate-400 text-xs">Workspace projects, dates, and member setups.</p>
             </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                value={searchProjectTerm}
+                onChange={(e) => setSearchProjectTerm(e.target.value)}
+                placeholder="Search projects by name..."
+                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 pl-10 pr-4 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500 transition shadow-sm"
+              />
+            </div>
             <button
               onClick={() => {
                 setFormError(null);
                 setShowCreateProject(true);
               }}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white transition rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-indigo-600/20"
+              className="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white transition rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-indigo-600/20"
             >
               <Plus className="w-4 h-4" /> Create Project
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {projectsData?.data?.length === 0 ? (
+            {projectsData?.data?.filter((p: any) => p.title.toLowerCase().includes(searchProjectTerm.toLowerCase())).length === 0 ? (
               <div className="col-span-full text-center py-20 bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 text-sm">
-                No projects available. Click &quot;Create Project&quot; to begin.
+                {searchProjectTerm ? "No projects match your search." : 'No projects available. Click "Create Project" to begin.'}
               </div>
             ) : (
-              projectsData?.data?.map((project: any) => (
+              projectsData?.data?.filter((p: any) => p.title.toLowerCase().includes(searchProjectTerm.toLowerCase())).map((project: any) => (
                 <div
                   key={project.id}
                   onClick={() => handleProjectClick(project.id)}
@@ -148,12 +166,24 @@ export default function AdminProjectsPage() {
                       >
                         {project.status.replace('_', ' ')}
                       </span>
-                      <button
-                        onClick={(e) => handleDeleteProject(project.id, e)}
-                        className="p-1 rounded bg-slate-100 dark:bg-slate-950 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFormError(null);
+                            setEditingProject(project);
+                          }}
+                          className="p-1 rounded bg-slate-100 dark:bg-slate-955 hover:bg-indigo-500/25 text-slate-500 hover:text-indigo-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => handleDeleteProject(project.id, e)}
+                          className="p-1 rounded bg-slate-100 dark:bg-slate-955 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                     <h3 className="font-extrabold text-base text-slate-800 dark:text-slate-200 block truncate">
                       {project.title}
@@ -194,6 +224,28 @@ export default function AdminProjectsPage() {
               toast.success('Project created successfully!');
             } catch (err: any) {
               setFormError(err.data?.message || 'Failed to create project.');
+            }
+          }}
+        />
+      )}
+ 
+      {editingProject && (
+        <EditProjectModal
+          project={editingProject}
+          usersData={usersData}
+          auth={auth}
+          formError={formError}
+          setFormError={setFormError}
+          isUpdatingProject={isUpdatingProject}
+          onClose={() => setEditingProject(null)}
+          onSubmit={async (payload) => {
+            try {
+              await updateProject(payload).unwrap();
+              setEditingProject(null);
+              refetchProjects();
+              toast.success('Project updated successfully!');
+            } catch (err: any) {
+              setFormError(err.data?.message || 'Failed to update project.');
             }
           }}
         />
