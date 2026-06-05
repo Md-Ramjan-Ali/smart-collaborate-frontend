@@ -1,12 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { RootState } from '../../../lib/store';
-import { setCredentials } from '../../../lib/features/auth/authSlice';
-import { useLoginMutation, useSignupMutation } from '../../../lib/services/authApi';
-import Link from 'next/link';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { RootState } from "../../../lib/store";
+import { setCredentials } from "../../../lib/features/auth/authSlice";
+import {
+  useLoginMutation,
+  useSignupMutation,
+} from "../../../lib/services/authApi";
+import Link from "next/link";
 
 import {
   Mail,
@@ -15,15 +18,16 @@ import {
   Sparkles,
   Layers,
   AlertTriangle,
-} from 'lucide-react';
+} from "lucide-react";
+import Loading from "@/components/share/Loading";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const auth = useSelector((state: RootState) => state.auth);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -33,7 +37,7 @@ export default function LoginPage() {
   useEffect(() => {
     setMounted(true);
     if (auth.token) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   }, [auth.token, router]);
 
@@ -42,45 +46,56 @@ export default function LoginPage() {
     setFormError(null);
 
     if (!email || !password) {
-      setFormError('Please enter both email and password.');
+      setFormError("Please enter both email and password.");
       return;
     }
 
     try {
       const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({
-        token: res.data.accessToken,
-        user: res.data.user
-      }));
-      router.push('/dashboard');
+      dispatch(
+        setCredentials({
+          token: res.data.accessToken,
+          user: res.data.user,
+        }),
+      );
+      router.push("/dashboard");
     } catch (err: any) {
-      setFormError(err.data?.message || 'Login failed. Please check credentials.');
+      setFormError(
+        err.data?.message || "Login failed. Please check credentials.",
+      );
     }
   };
 
-  const handleDemoLogin = async (role: 'ADMIN' | 'PROJECT_MANAGER' | 'TEAM_MEMBER') => {
+  const handleDemoLogin = async (
+    role: "ADMIN" | "PROJECT_MANAGER" | "TEAM_MEMBER",
+  ) => {
     setFormError(null);
     const emailMap = {
-      ADMIN: 'admin@smart.com',
-      PROJECT_MANAGER: 'pm@smart.com',
-      TEAM_MEMBER: 'member@smart.com',
+      ADMIN: "admin@smart.com",
+      PROJECT_MANAGER: "pm@smart.com",
+      TEAM_MEMBER: "member@smart.com",
     };
     const nameMap = {
-      ADMIN: 'Demo Admin',
-      PROJECT_MANAGER: 'Demo Manager',
-      TEAM_MEMBER: 'Demo Member',
+      ADMIN: "Demo Admin",
+      PROJECT_MANAGER: "Demo Manager",
+      TEAM_MEMBER: "Demo Member",
     };
-    
+
     const demoEmail = emailMap[role];
-    const demoPassword = 'demo123Password';
-    
+    const demoPassword = "demo123Password";
+
     try {
-      const res = await login({ email: demoEmail, password: demoPassword }).unwrap();
-      dispatch(setCredentials({
-        token: res.data.accessToken,
-        user: res.data.user
-      }));
-      router.push('/dashboard');
+      const res = await login({
+        email: demoEmail,
+        password: demoPassword,
+      }).unwrap();
+      dispatch(
+        setCredentials({
+          token: res.data.accessToken,
+          user: res.data.user,
+        }),
+      );
+      router.push("/dashboard");
     } catch (err: any) {
       if (err.status === 401 || err.status === 400) {
         try {
@@ -90,18 +105,23 @@ export default function LoginPage() {
             password: demoPassword,
             role,
           }).unwrap();
-          
-          const resRetry = await login({ email: demoEmail, password: demoPassword }).unwrap();
-          dispatch(setCredentials({
-            token: resRetry.data.accessToken,
-            user: resRetry.data.user
-          }));
-          router.push('/dashboard');
+
+          const resRetry = await login({
+            email: demoEmail,
+            password: demoPassword,
+          }).unwrap();
+          dispatch(
+            setCredentials({
+              token: resRetry.data.accessToken,
+              user: resRetry.data.user,
+            }),
+          );
+          router.push("/dashboard");
         } catch (signUpErr: any) {
-          setFormError('Failed to initialize sandbox credentials.');
+          setFormError("Failed to initialize sandbox credentials.");
         }
       } else {
-        setFormError(err.data?.message || 'Connection error.');
+        setFormError(err.data?.message || "Connection error.");
       }
     }
   };
@@ -110,7 +130,7 @@ export default function LoginPage() {
     return (
       <div className="flex-1 flex items-center justify-center bg-slate-950">
         <div className="flex flex-col items-center gap-2">
-          <Layers className="w-8 h-8 text-indigo-500 animate-spin" />
+          <Loading className="w-12 h-12" />
         </div>
       </div>
     );
@@ -129,14 +149,16 @@ export default function LoginPage() {
             <Sparkles className="w-4.5 h-4.5" />
             Smart Collaboration System
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-none bg-gradient-to-r from-white via-indigo-100 to-purple-400 bg-clip-text text-transparent">
             Collaborate. <br />
             <span className="text-indigo-500">Intelligently.</span>
           </h1>
-          
+
           <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-md">
-            A premium, role-based project coordination hub equipped with workload optimization, task validation triggers, and analytics insights.
+            A premium, role-based project coordination hub equipped with
+            workload optimization, task validation triggers, and analytics
+            insights.
           </p>
 
           <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 backdrop-blur-md space-y-4 max-w-md">
@@ -146,25 +168,37 @@ export default function LoginPage() {
             </div>
             <div className="grid grid-cols-3 gap-2">
               <button
-                onClick={() => handleDemoLogin('ADMIN')}
+                onClick={() => handleDemoLogin("ADMIN")}
                 className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-900 hover:bg-indigo-600/20 hover:border-indigo-500 border border-slate-800 transition group text-left cursor-pointer"
               >
-                <span className="text-[10px] uppercase font-bold text-indigo-400 tracking-wider">Admin</span>
-                <span className="text-xs text-slate-400 font-medium mt-1">Full System</span>
+                <span className="text-[10px] uppercase font-bold text-indigo-400 tracking-wider">
+                  Admin
+                </span>
+                <span className="text-xs text-slate-400 font-medium mt-1">
+                  Full System
+                </span>
               </button>
               <button
-                onClick={() => handleDemoLogin('PROJECT_MANAGER')}
+                onClick={() => handleDemoLogin("PROJECT_MANAGER")}
                 className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-900 hover:bg-purple-600/20 hover:border-purple-500 border border-slate-800 transition group text-left cursor-pointer"
               >
-                <span className="text-[10px] uppercase font-bold text-purple-400 tracking-wider">PM</span>
-                <span className="text-xs text-slate-400 font-medium mt-1">Manage PM</span>
+                <span className="text-[10px] uppercase font-bold text-purple-400 tracking-wider">
+                  PM
+                </span>
+                <span className="text-xs text-slate-400 font-medium mt-1">
+                  Manage PM
+                </span>
               </button>
               <button
-                onClick={() => handleDemoLogin('TEAM_MEMBER')}
+                onClick={() => handleDemoLogin("TEAM_MEMBER")}
                 className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-900 hover:bg-emerald-600/20 hover:border-emerald-500 border border-slate-800 transition group text-left cursor-pointer"
               >
-                <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Member</span>
-                <span className="text-xs text-slate-400 font-medium mt-1">Status Update</span>
+                <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">
+                  Member
+                </span>
+                <span className="text-xs text-slate-400 font-medium mt-1">
+                  Status Update
+                </span>
               </button>
             </div>
           </div>
@@ -174,7 +208,9 @@ export default function LoginPage() {
         <div className="md:col-span-6 w-full">
           <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 md:p-8 backdrop-blur-xl shadow-2xl flex flex-col">
             <h2 className="text-xl font-bold text-white mb-2">Welcome Back</h2>
-            <p className="text-xs text-slate-450 mb-6">Enter your details to access the collaboration space.</p>
+            <p className="text-xs text-slate-450 mb-6">
+              Enter your details to access the collaboration space.
+            </p>
 
             {formError && (
               <div className="mb-4 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
@@ -185,7 +221,9 @@ export default function LoginPage() {
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email Address</label>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Email Address
+                </label>
                 <div className="relative">
                   <Mail className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-slate-500" />
                   <input
@@ -198,7 +236,9 @@ export default function LoginPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Password</label>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Password
+                </label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-slate-500" />
                   <input
@@ -215,14 +255,17 @@ export default function LoginPage() {
                 disabled={isLoggingIn}
                 className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:scale-98 transition rounded-xl font-semibold text-sm cursor-pointer shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
               >
-                {isLoggingIn ? 'Verifying Account...' : 'Sign In'}
+                {isLoggingIn ? "Verifying Account..." : "Sign In"}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </form>
 
             <div className="mt-6 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-400">
-              Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-indigo-400 font-bold hover:underline">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/register"
+                className="text-indigo-400 font-bold hover:underline"
+              >
                 Create one now
               </Link>
             </div>

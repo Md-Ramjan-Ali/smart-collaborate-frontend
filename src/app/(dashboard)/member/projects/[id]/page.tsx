@@ -14,6 +14,7 @@ import MemberSidebar from '../../_components/MemberSidebar';
 import MemberTaskPipeline from '../_components/MemberTaskPipeline';
 import TaskDetailsModal from '../../../../../components/share/TaskDetailsModal';
 import Header from '@/components/share/Header';
+import Loading from '@/components/share/Loading';
 
 export default function MemberProjectDetailsPage() {
   const dispatch = useDispatch();
@@ -136,8 +137,8 @@ export default function MemberProjectDetailsPage() {
             />
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full text-slate-500 text-sm">
-            Loading project details...
+          <div className="flex flex-col items-center justify-center h-[50vh] gap-3">
+            <Loading size={32} />
           </div>
         )}
       </main>

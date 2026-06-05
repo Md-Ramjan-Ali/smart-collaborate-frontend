@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../lib/store';
-import { Layers } from 'lucide-react';
+import Loading from '@/components/share/Loading';
 
 export default function Home() {
   const router = useRouter();
@@ -28,8 +28,7 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-950 text-slate-400">
       <div className="flex flex-col items-center gap-3 animate-pulse">
-        <Layers className="w-8 h-8 text-indigo-500 animate-spin" />
-        <span className="text-xs font-bold tracking-widest uppercase text-indigo-400">Loading Workspace...</span>
+        <Loading size={32} className="text-indigo-500" />
       </div>
     </div>
   );
