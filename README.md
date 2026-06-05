@@ -4,6 +4,13 @@ A high-fidelity, premium Next.js dashboard built as the user-interface for the S
 
 ---
 
+## 🌐 Live Deployed Links
+
+*   **Frontend Client:** [https://smart-collaborate-frontend.vercel.app](https://smart-collaborate-frontend.vercel.app)
+*   **Backend API Server:** [https://smart-collaborate-server.vercel.app](https://smart-collaborate-server.vercel.app)
+
+---
+
 ## 🛠️ Tech Stack & Dependencies
 
 *   **Framework:** Next.js (App Router, Client-side React Hooks)
