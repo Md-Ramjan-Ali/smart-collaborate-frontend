@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, Sun, Moon, LogOut, User } from 'lucide-react';
 import NotificationCenter from './NotificationCenter';
+import { useTheme } from 'next-themes';
 
 interface HeaderProps {
   title: string;
   onToggleSidebar: () => void;
-  theme: 'dark' | 'light';
-  onToggleTheme: () => void;
+  theme?: 'dark' | 'light';
+  onToggleTheme?: () => void;
   onLogout: () => void;
   auth: any;
 }
@@ -16,12 +17,27 @@ interface HeaderProps {
 export default function Header({
   title,
   onToggleSidebar,
-  theme,
-  onToggleTheme,
+  theme: propTheme,
+  onToggleTheme: propToggleTheme,
   onLogout,
   auth,
 }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const activeTheme = resolvedTheme || theme || 'dark';
+  const toggleTheme = () => {
+    if (propToggleTheme) {
+      propToggleTheme();
+    } else {
+      setTheme(activeTheme === 'dark' ? 'light' : 'dark');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-30 w-full bg-white/70 dark:bg-slate-950/70 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-6 py-3 flex items-center justify-between transition-colors duration-300">
@@ -47,13 +63,17 @@ export default function Header({
         <NotificationCenter />
 
         {/* Theme Toggle */}
-        <button
-          onClick={onToggleTheme}
-          className="p-1.5 rounded text-slate-500 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
-          title="Toggle Mode"
-        >
-          {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-        </button>
+        {mounted ? (
+          <button
+            onClick={toggleTheme}
+            className="p-1.5 rounded text-slate-500 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+            title="Toggle Mode"
+          >
+            {activeTheme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+          </button>
+        ) : (
+          <div className="w-7 h-7 rounded bg-slate-100 dark:bg-slate-800 animate-pulse" />
+        )}
 
         {/* User Dropdown */}
         <div className="relative">

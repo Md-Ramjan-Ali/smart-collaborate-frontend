@@ -17,20 +17,8 @@ export default function MemberMyAssignmentsPage() {
   const router = useRouter();
   const auth = useSelector((state: RootState) => state.auth);
 
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
-    if (savedTheme) { setTheme(savedTheme); document.documentElement.className = savedTheme; }
-    else document.documentElement.className = 'dark';
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next); localStorage.setItem('theme', next); document.documentElement.className = next;
-  };
 
   const [logoutApi] = useLogoutMutation();
   const [updateTaskApi] = useUpdateTaskMutation();
@@ -61,7 +49,7 @@ export default function MemberMyAssignmentsPage() {
   const completedCount = myTasksData?.data?.completed?.length || 0;
 
   return (
-    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-background text-foreground transition-colors duration-300">
       
       <MemberSidebar
         auth={auth}
@@ -73,8 +61,6 @@ export default function MemberMyAssignmentsPage() {
         <Header
           title="My Assignments"
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          theme={theme}
-          onToggleTheme={toggleTheme}
           onLogout={handleLogout}
           auth={auth}
         />

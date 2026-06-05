@@ -91,7 +91,7 @@ export default function EditProjectModal({
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-2 text-xs text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-2 text-xs text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
               >
                 <option value="NOT_STARTED">On Hold</option>
                 <option value="IN_PROGRESS">Active</option>
@@ -104,7 +104,7 @@ export default function EditProjectModal({
                 type="date"
                 value={start}
                 onChange={(e) => setStart(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-2 text-xs text-slate-500 dark:text-slate-400 outline-none cursor-pointer"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-2 text-xs text-slate-500 dark:text-slate-400 outline-none cursor-pointer"
               />
             </div>
             <div>
@@ -113,7 +113,7 @@ export default function EditProjectModal({
                 type="date"
                 value={end}
                 onChange={(e) => setEnd(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-2 text-xs text-slate-500 dark:text-slate-400 outline-none cursor-pointer"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-2 text-xs text-slate-500 dark:text-slate-400 outline-none cursor-pointer"
               />
             </div>
           </div>

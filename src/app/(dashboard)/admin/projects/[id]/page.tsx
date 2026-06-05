@@ -45,25 +45,7 @@ export default function AdminProjectDetailsPage() {
   const id = params.id as string;
   const auth = useSelector((state: RootState) => state.auth);
 
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "dark" | "light";
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
-    } else {
-      document.documentElement.className = "dark";
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    localStorage.setItem("theme", next);
-    document.documentElement.className = next;
-  };
 
   const [formError, setFormError] = useState<string | null>(null);
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -175,7 +157,7 @@ export default function AdminProjectDetailsPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-955 dark:text-slate-100 transition-colors duration-300">
+    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-background text-foreground transition-colors duration-300">
       
       <AdminSidebar
         auth={auth}
@@ -187,8 +169,6 @@ export default function AdminProjectDetailsPage() {
         <Header
           title={projectDetails?.data ? `Project / ${projectDetails.data.name}` : "Project Details"}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          theme={theme}
-          onToggleTheme={toggleTheme}
           onLogout={handleLogout}
           auth={auth}
         />

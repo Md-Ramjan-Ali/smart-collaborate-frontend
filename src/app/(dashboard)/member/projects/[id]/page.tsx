@@ -22,7 +22,6 @@ export default function MemberProjectDetailsPage() {
   const id = params.id as string;
   const auth = useSelector((state: RootState) => state.auth);
 
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
   const [filterPriority, setFilterPriority] = useState('');
@@ -32,23 +31,6 @@ export default function MemberProjectDetailsPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(1);
   const [selectedTaskDetails, setSelectedTaskDetails] = useState<{ id: string; title: string } | null>(null);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
-    } else {
-      document.documentElement.className = 'dark';
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    localStorage.setItem('theme', next);
-    document.documentElement.className = next;
-  };
 
   const [logoutApi] = useLogoutMutation();
   const [updateTaskApi] = useUpdateTaskMutation();
@@ -97,7 +79,7 @@ export default function MemberProjectDetailsPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-955 dark:text-slate-100 transition-colors duration-300">
+    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-background text-foreground transition-colors duration-300">
       
       <MemberSidebar
         auth={auth}
@@ -109,8 +91,6 @@ export default function MemberProjectDetailsPage() {
         <Header
           title={projectDetails?.data ? `Project / ${projectDetails.data.title}` : "Project Details"}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          theme={theme}
-          onToggleTheme={toggleTheme}
           onLogout={handleLogout}
           auth={auth}
         />

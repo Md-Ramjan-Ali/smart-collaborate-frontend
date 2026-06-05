@@ -77,7 +77,7 @@ export default function EditTaskModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="SSL Setup"
-              className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-800 dark:text-slate-200 outline-none"
+              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-800 dark:text-slate-200 outline-none"
             />
           </div>
           <div>
@@ -86,7 +86,7 @@ export default function EditTaskModal({
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="Task details"
-              className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-800 dark:text-slate-200 outline-none"
+              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-800 dark:text-slate-200 outline-none"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -95,7 +95,7 @@ export default function EditTaskModal({
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-slate-350 outline-none"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-slate-355 outline-none"
               >
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
@@ -107,7 +107,7 @@ export default function EditTaskModal({
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-slate-355 outline-none"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-slate-355 outline-none"
               >
                 <option value="TO_DO">To Do</option>
                 <option value="IN_PROGRESS">In Progress</option>
@@ -122,7 +122,7 @@ export default function EditTaskModal({
               <select
                 value={assignee}
                 onChange={(e) => setAssignee(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-500 dark:text-slate-400 outline-none"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-500 dark:text-slate-400 outline-none"
               >
                 <option value="">Unassigned</option>
                 {projectDetails?.teamMembers?.map((m: any) => (
@@ -143,7 +143,7 @@ export default function EditTaskModal({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-500 dark:text-slate-400 outline-none"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-500 dark:text-slate-400 outline-none"
               />
             </div>
           </div>

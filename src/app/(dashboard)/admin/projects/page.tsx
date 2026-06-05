@@ -26,25 +26,7 @@ export default function AdminProjectsPage() {
   const router = useRouter();
   const auth = useSelector((state: RootState) => state.auth);
 
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
-    } else {
-      document.documentElement.className = 'dark';
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    localStorage.setItem('theme', next);
-    document.documentElement.className = next;
-  };
 
   const [formError, setFormError] = useState<string | null>(null);
   const [showCreateProject, setShowCreateProject] = useState(false);
@@ -92,7 +74,7 @@ export default function AdminProjectsPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-955 dark:text-slate-100 transition-colors duration-300">
+    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-background text-foreground transition-colors duration-300">
       
       <AdminSidebar
         auth={auth}
@@ -104,8 +86,6 @@ export default function AdminProjectsPage() {
         <Header
           title="Projects Hub"
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          theme={theme}
-          onToggleTheme={toggleTheme}
           onLogout={handleLogout}
           auth={auth}
         />
@@ -173,13 +153,13 @@ export default function AdminProjectsPage() {
                             setFormError(null);
                             setEditingProject(project);
                           }}
-                          className="p-1 rounded bg-slate-100 dark:bg-slate-955 hover:bg-indigo-500/25 text-slate-500 hover:text-indigo-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
+                          className="p-1 rounded bg-slate-100 dark:bg-slate-950 hover:bg-indigo-500/25 text-slate-500 hover:text-indigo-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={(e) => handleDeleteProject(project.id, e)}
-                          className="p-1 rounded bg-slate-100 dark:bg-slate-955 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
+                          className="p-1 rounded bg-slate-100 dark:bg-slate-950 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
