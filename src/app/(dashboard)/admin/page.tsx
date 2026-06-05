@@ -1,81 +1,55 @@
 'use client';
-
+ 
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { RootState } from '../../../lib/store';
 import { logout } from '../../../lib/features/auth/authSlice';
-import { useLogoutMutation, useGetDashboardMetaQuery } from '../../../lib/services/api';
-import { Briefcase, CheckCircle, Clock, ListTodo, Layers, Sparkles, TrendingUp, Sun, Moon } from 'lucide-react';
+import { useLogoutMutation } from '../../../lib/services/authApi';
+import { useGetDashboardMetaQuery } from '../../../lib/services/dashboardApi';
+import { useGetTasksQuery } from '../../../lib/services/taskApi';
+import { Briefcase, CheckCircle, Clock, ListTodo, Layers, Sparkles, TrendingUp, Sun, Moon, AlertTriangle } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as ChartTooltip } from 'recharts';
 import AdminSidebar from './_components/AdminSidebar';
-
+import Header from '@/components/share/Header';
+ 
 const CHART_COLORS = ['#3b82f6', '#f59e0b', '#a855f7', '#10b981'];
-
+ 
 export default function AdminOverviewPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const auth = useSelector((state: RootState) => state.auth);
-
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+ 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
-    } else {
-      document.documentElement.className = 'dark';
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    localStorage.setItem('theme', next);
-    document.documentElement.className = next;
-  };
 
   const [logoutApi] = useLogoutMutation();
   const { data: dashboardData, refetch: refetchDashboard } = useGetDashboardMetaQuery(undefined);
-
+  const { data: highPriorityTasks } = useGetTasksQuery({ priority: 'HIGH', limit: '5' });
+ 
   const handleLogout = async () => {
     try { await logoutApi(undefined).unwrap(); } catch {}
     dispatch(logout());
     router.push('/login');
   };
-
+ 
   return (
-    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
-      {/* Mobile Top Bar */}
-      <header className="md:hidden flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-extrabold text-sm text-slate-900 dark:text-white">Smart Collaborate</span>
-        </div>
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isSidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
-          </svg>
-        </button>
-      </header>
-
+    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-background text-foreground transition-colors duration-300">
+      
       <AdminSidebar
         auth={auth}
         isSidebarOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onLogout={handleLogout}
       />
-
-      <main className="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full md:h-full md:ml-64">
+ 
+      <div className="flex-1 flex flex-col md:h-full md:overflow-hidden md:ml-64">
+        <Header
+          title="Workspace Dashboard"
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          onLogout={handleLogout}
+          auth={auth}
+        />
+ 
+        <main className="flex-1 p-6 overflow-y-auto max-w-7xl w-full">
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -86,10 +60,10 @@ export default function AdminOverviewPage() {
               Refresh Stats
             </button>
           </div>
-
+ 
           {/* KPI Cards */}
           {dashboardData?.data && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm">
                 <div className="space-y-1">
                   <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">Total Projects</span>
@@ -126,9 +100,18 @@ export default function AdminOverviewPage() {
                   <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
               </div>
+              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">Overdue Tasks</span>
+                  <span className="text-2xl font-black text-rose-600 dark:text-rose-455">{dashboardData.data.kpis.tasks.overdue || 0}</span>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+                </div>
+              </div>
             </div>
           )}
-
+ 
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-5 p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
@@ -159,7 +142,7 @@ export default function AdminOverviewPage() {
                 <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded bg-emerald-500" /> Completed</div>
               </div>
             </div>
-
+ 
             <div className="lg:col-span-7 p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
               <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-4 block">Project Progress Hub</span>
               <div className="space-y-4 flex-1 overflow-y-auto max-h-[260px] pr-2">
@@ -181,10 +164,10 @@ export default function AdminOverviewPage() {
               </div>
             </div>
           </div>
-
-          {/* Deadlines + Activity */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-6 p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
+ 
+          {/* Deadlines + High Priority + Activity */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
               <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-4 block">Upcoming Deadlines (Next 48 Hours)</span>
               <div className="space-y-3 flex-1 overflow-y-auto max-h-[300px]">
                 {dashboardData?.data?.upcomingTasks?.length === 0 ? (
@@ -205,8 +188,29 @@ export default function AdminOverviewPage() {
                 )}
               </div>
             </div>
-
-            <div className="lg:col-span-6 p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
+ 
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-4 block">High Priority Tasks</span>
+              <div className="space-y-3 flex-1 overflow-y-auto max-h-[300px]">
+                {!highPriorityTasks?.data?.data || highPriorityTasks.data.data.length === 0 ? (
+                  <div className="text-center py-10 text-xs text-slate-500">No high priority tasks.</div>
+                ) : (
+                  highPriorityTasks.data.data.map((task: any) => (
+                    <div key={task.id} className="p-3 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                      <div className="min-w-0">
+                        <span className="font-bold text-xs text-slate-900 dark:text-slate-200 block truncate">{task.title}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">Project: {task.project?.title}</span>
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-[8px] font-extrabold text-rose-600 bg-rose-500/10 px-2.5 py-0.5 rounded-full ml-2 shrink-0 uppercase border border-rose-500/10">
+                        {task.status.replace('_', ' ')}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+ 
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
               <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-4 block">Workspace Activity Log</span>
               <div className="space-y-3 flex-1 overflow-y-auto max-h-[300px]">
                 {dashboardData?.data?.recentActivities?.length === 0 ? (
@@ -227,6 +231,7 @@ export default function AdminOverviewPage() {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

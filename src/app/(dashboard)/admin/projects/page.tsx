@@ -5,51 +5,38 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { RootState } from '../../../../lib/store';
 import { logout } from '../../../../lib/features/auth/authSlice';
+import { useLogoutMutation, useGetAllUsersQuery } from '../../../../lib/services/authApi';
 import {
-  useLogoutMutation,
   useGetProjectsQuery,
   useCreateProjectMutation,
+  useUpdateProjectMutation,
   useDeleteProjectMutation,
-  useGetAllUsersQuery,
-} from '../../../../lib/services/api';
+} from '../../../../lib/services/projectApi';
+import EditProjectModal from './_components/EditProjectModal';
 
-import { Layers, Plus, Calendar, Users, Trash2 } from 'lucide-react';
+import { Layers, Plus, Calendar, Users, Trash2, Search, Edit } from 'lucide-react';
 import { toast } from 'sonner';
 import AdminSidebar from '../_components/AdminSidebar';
 import CreateProjectModal from './_components/CreateProjectModal';
 import ConfirmationModal from '@/components/share/ConfirmationModal';
+import Header from '@/components/share/Header';
 
 export default function AdminProjectsPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const auth = useSelector((state: RootState) => state.auth);
 
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light';
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
-    } else {
-      document.documentElement.className = 'dark';
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    localStorage.setItem('theme', next);
-    document.documentElement.className = next;
-  };
 
   const [formError, setFormError] = useState<string | null>(null);
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [confirmDeleteProject, setConfirmDeleteProject] = useState<string | null>(null);
+  const [searchProjectTerm, setSearchProjectTerm] = useState('');
+  const [editingProject, setEditingProject] = useState<any | null>(null);
 
   const [logoutApi] = useLogoutMutation();
   const [createProject, { isLoading: isCreatingProject }] = useCreateProjectMutation();
+  const [updateProject, { isLoading: isUpdatingProject }] = useUpdateProjectMutation();
   const [deleteProjectApi] = useDeleteProjectMutation();
 
   const { data: projectsData, refetch: refetchProjects } = useGetProjectsQuery(undefined);
@@ -87,64 +74,60 @@ export default function AdminProjectsPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
-      {/* Mobile Top Bar */}
-      <header className="md:hidden flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-extrabold text-sm text-slate-900 dark:text-white">Smart Collaborate</span>
-        </div>
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d={isSidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
-            />
-          </svg>
-        </button>
-      </header>
-
+    <div className="flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-background text-foreground transition-colors duration-300">
+      
       <AdminSidebar
         auth={auth}
         isSidebarOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onLogout={handleLogout}
       />
 
-      <main className="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full md:h-full md:ml-64">
+      <div className="flex-1 flex flex-col md:h-full md:overflow-hidden md:ml-64">
+        <Header
+          title="Projects Hub"
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          onLogout={handleLogout}
+          auth={auth}
+        />
+
+        <main className="flex-1 p-6 overflow-y-auto max-w-7xl w-full">
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Projects Registry</h1>
               <p className="text-slate-500 dark:text-slate-400 text-xs">Workspace projects, dates, and member setups.</p>
             </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                value={searchProjectTerm}
+                onChange={(e) => setSearchProjectTerm(e.target.value)}
+                placeholder="Search projects by name..."
+                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 pl-10 pr-4 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500 transition shadow-sm"
+              />
+            </div>
             <button
               onClick={() => {
                 setFormError(null);
                 setShowCreateProject(true);
               }}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white transition rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-indigo-600/20"
+              className="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white transition rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-indigo-600/20"
             >
               <Plus className="w-4 h-4" /> Create Project
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {projectsData?.data?.length === 0 ? (
+            {projectsData?.data?.filter((p: any) => p.title.toLowerCase().includes(searchProjectTerm.toLowerCase())).length === 0 ? (
               <div className="col-span-full text-center py-20 bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 text-sm">
-                No projects available. Click &quot;Create Project&quot; to begin.
+                {searchProjectTerm ? "No projects match your search." : 'No projects available. Click "Create Project" to begin.'}
               </div>
             ) : (
-              projectsData?.data?.map((project: any) => (
+              projectsData?.data?.filter((p: any) => p.title.toLowerCase().includes(searchProjectTerm.toLowerCase())).map((project: any) => (
                 <div
                   key={project.id}
                   onClick={() => handleProjectClick(project.id)}
@@ -163,12 +146,24 @@ export default function AdminProjectsPage() {
                       >
                         {project.status.replace('_', ' ')}
                       </span>
-                      <button
-                        onClick={(e) => handleDeleteProject(project.id, e)}
-                        className="p-1 rounded bg-slate-100 dark:bg-slate-950 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFormError(null);
+                            setEditingProject(project);
+                          }}
+                          className="p-1 rounded bg-slate-100 dark:bg-slate-950 hover:bg-indigo-500/25 text-slate-500 hover:text-indigo-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => handleDeleteProject(project.id, e)}
+                          className="p-1 rounded bg-slate-100 dark:bg-slate-950 hover:bg-rose-500/25 text-slate-500 hover:text-rose-600 transition border border-slate-200 dark:border-slate-800 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                     <h3 className="font-extrabold text-base text-slate-800 dark:text-slate-200 block truncate">
                       {project.title}
@@ -213,6 +208,28 @@ export default function AdminProjectsPage() {
           }}
         />
       )}
+ 
+      {editingProject && (
+        <EditProjectModal
+          project={editingProject}
+          usersData={usersData}
+          auth={auth}
+          formError={formError}
+          setFormError={setFormError}
+          isUpdatingProject={isUpdatingProject}
+          onClose={() => setEditingProject(null)}
+          onSubmit={async (payload) => {
+            try {
+              await updateProject(payload).unwrap();
+              setEditingProject(null);
+              refetchProjects();
+              toast.success('Project updated successfully!');
+            } catch (err: any) {
+              setFormError(err.data?.message || 'Failed to update project.');
+            }
+          }}
+        />
+      )}
 
       {/* Delete Project Confirmation */}
       <ConfirmationModal
@@ -224,6 +241,7 @@ export default function AdminProjectsPage() {
         cancelText="Cancel"
         onConfirm={confirmProjectDelete}
       />
+      </div>
     </div>
   );
 }

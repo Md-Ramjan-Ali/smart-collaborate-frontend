@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSignupMutation } from '../../../lib/services/api';
+import { useSignupMutation } from '../../../lib/services/authApi';
 import Link from 'next/link';
 
 import {
@@ -14,6 +14,8 @@ import {
   Layers,
   AlertTriangle,
 } from 'lucide-react';
+
+import Loading from '@/components/share/Loading';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -60,7 +62,7 @@ export default function RegisterPage() {
     return (
       <div className="flex-1 flex items-center justify-center bg-slate-950">
         <div className="flex flex-col items-center gap-2">
-          <Layers className="w-8 h-8 text-indigo-500 animate-spin" />
+          <Loading size={32} className="text-indigo-500" />
         </div>
       </div>
     );
