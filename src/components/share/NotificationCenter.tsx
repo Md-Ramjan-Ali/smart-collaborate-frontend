@@ -49,7 +49,7 @@ export default function NotificationCenter() {
             onClick={() => setIsOpen(false)}
             className="fixed inset-0 z-40 bg-transparent"
           />
-          <div className="absolute bottom-10 right-0 z-50 w-72 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl p-4 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-150 text-slate-850 dark:text-slate-100">
+          <div className="absolute top-full mt-2 right-0 z-50 w-72 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl p-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150 text-slate-850 dark:text-slate-100">
             <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
               <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <Bell className="w-3.5 h-3.5 text-indigo-500" />

@@ -215,7 +215,7 @@ export default function LoginPage() {
                 disabled={isLoggingIn}
                 className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:scale-98 transition rounded-xl font-semibold text-sm cursor-pointer shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
               >
-                {isLoggingIn ? 'Verifying Account...' : 'Continue to Dashboard'}
+                {isLoggingIn ? 'Verifying Account...' : 'Sign In'}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </form>
