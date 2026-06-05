@@ -16,40 +16,6 @@ A high-fidelity, premium Next.js dashboard built as the user-interface for the S
 
 ---
 
-## 📂 Folder Structure
-
-```
-frontend/
-├── public/                 # Static assets and brand icons
-├── src/
-│   ├── app/                # Next.js App Router folders
-│   │   ├── (auth)/         # Auth-related pages (Login, Register)
-│   │   ├── (dashboard)/    # Role-based dashboards (Admin, Manager, Member)
-│   │   │   ├── admin/
-│   │   │   ├── manager/
-│   │   │   ├── member/
-│   │   │   └── _components/ # Shared layout components (e.g., Sidebars)
-│   │   ├── dashboard/      # Centralized router-redirect controller
-│   │   ├── globals.css     # Global styles and Tailwind imports
-│   │   ├── layout.tsx      # Root app wrapper
-│   │   └── page.tsx        # Home/Root redirect logic
-│   │
-│   ├── components/         # Shareable UI components (e.g., Modals, Dialogs)
-│   │   ├── share/
-│   │   └── ui/
-│   │
-│   └── lib/                # App services & configuration
-│       ├── features/       # Redux slices (Auth slice)
-│       ├── services/       # Split RTK Query services (authApi, projectApi, taskApi, dashboardApi)
-│       ├── store.ts        # Redux store provider configuration
-│       └── utils.ts        # CSS merging helper utilities
-│
-├── .env.local              # Local environment configuration variables
-└── tailwind.config.ts      # Tailwind configuration and dark mode classes
-```
-
----
-
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
@@ -84,3 +50,9 @@ Open [http://localhost:3000](http://localhost:3000) inside your web browser.
 *   **Vibrant HSL Theme Palette:** Seamless dark and light themes that reflect professional SaaS standards.
 *   **Smart Feedback Toasts:** Non-blocking warnings (such as user overload warning trigger) and errors are gracefully displayed to the user using Sonner.
 *   **Demo Sandbox Selector:** Allows testers to choose an identity role and sign in with a single click.
+ 
+---
+ 
+## 🌐 Deployment
+ 
+For comprehensive instructions on deploying both the backend and frontend to services like Render and Vercel, please refer to the primary repository's [README.md](../README.md#%F0%9F%8C%90-deployment-instructions).
