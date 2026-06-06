@@ -168,7 +168,7 @@ export default function AdminProjectDetailsPage() {
 
       <div className="flex-1 flex flex-col md:h-full md:overflow-hidden md:ml-64">
         <Header
-          title={projectDetails?.data ? `Project / ${projectDetails.data.name}` : "Project Details"}
+          title={projectDetails?.data ? `Project / ${projectDetails.data.title}` : "Project Details"}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           onLogout={handleLogout}
           auth={auth}
