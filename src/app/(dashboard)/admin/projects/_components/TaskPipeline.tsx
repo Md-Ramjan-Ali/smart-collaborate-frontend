@@ -79,14 +79,6 @@ export default function TaskPipeline({
               <option value="desc">Desc</option>
             </select>
           </div>
-
-          {tasksData?.data?.meta && tasksData.data.meta.totalPages > 1 && (
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <button disabled={page === 1} onClick={() => setPage(page - 1)} className="px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded hover:text-slate-900 dark:hover:text-white disabled:opacity-40 transition font-bold cursor-pointer">Prev</button>
-              <span>Page {page} of {tasksData.data.meta.totalPages}</span>
-              <button disabled={page === tasksData.data.meta.totalPages} onClick={() => setPage(page + 1)} className="px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded hover:text-slate-900 dark:hover:text-white disabled:opacity-40 transition font-bold cursor-pointer">Next</button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -149,6 +141,16 @@ export default function TaskPipeline({
           </tbody>
         </table>
       </div>
+
+      {tasksData?.data?.meta && tasksData.data.meta.totalPages > 1 && (
+        <div className="flex justify-end pt-3 border-t border-slate-100 dark:border-slate-800/60 mt-3">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <button disabled={page === 1} onClick={() => setPage(page - 1)} className="px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded hover:text-slate-900 dark:hover:text-white disabled:opacity-40 transition font-bold cursor-pointer">Prev</button>
+            <span>Page {page} of {tasksData.data.meta.totalPages}</span>
+            <button disabled={page === tasksData.data.meta.totalPages} onClick={() => setPage(page + 1)} className="px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded hover:text-slate-900 dark:hover:text-white disabled:opacity-40 transition font-bold cursor-pointer">Next</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
