@@ -1,6 +1,6 @@
-# Smart Collaboration System - Frontend
+# Smart Collaboration System - Frontend Client
 
-A high-fidelity, premium Next.js dashboard built as the user-interface for the Smart Project & Task Collaboration System. It features role-based modular layouts, modern animations, real-time feedback toast systems, interactive graphs, and advanced task search, sorting, and filtering options.
+A high-fidelity, premium Next.js dashboard client built for the **Smart Project & Task Collaboration System**. This application features modular role-based views (Admin, Project Manager, Team Member), dynamic task status pipelines, interactive charts, real-time alert toast alerts, and a fully polished light/dark mode engine.
 
 ---
 
@@ -11,26 +11,72 @@ A high-fidelity, premium Next.js dashboard built as the user-interface for the S
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+## 🔑 Demo Sandbox Credentials
 
-*   **Framework:** Next.js (App Router, Client-side React Hooks)
-*   **State Management & Data Fetching:** Redux Toolkit & RTK Query
-*   **Icons:** Lucide React
-*   **Charts & Visualization:** Recharts
-*   **Toasts & Alerts:** Sonner
-*   **Animations:** Tailwind CSS transitions, keyframes, and custom utility classes
-*   **Styling:** Vanilla Tailwind CSS with customizable Dark/Light mode theme engines
+For rapid assessment and testing of different user roles, use the **Quick Sandbox Login** buttons on the login screen or enter these credentials:
+*   **Admin User:** `admin@smart.com` / `demo123Password` (Full CRUD operations across projects, tasks, member setup, activity feeds, and workloads)
+*   **Project Manager:** `pm@smart.com` / `demo123Password` (Manage projects, assign and manage tasks, view workloads)
+*   **Team Member:** `member@smart.com` / `demo123Password` (Personalized dashboard, update assigned tasks, chat comments, and uploads)
 
 ---
 
-## ⚙️ Setup & Installation
+## 🚀 Implemented Features Checklist
+
+### 1. Robust Authentication & RBAC
+*   **Email & Password Authentication:** Handled via Redux state credentials.
+*   **One-Click Demo Switcher:** Allows direct sign-in for testing.
+*   **Role-Based Security:**
+    *   *Admin* has unrestricted read/write/delete capabilities.
+    *   *Project Manager* can manage assigned projects, invite members, and allocate tasks.
+    *   *Team Members* are locked into their tasks and can only modify status for assigned work.
+
+### 2. Task Management & Conflict Warnings
+*   **Task CRUD:** Modals for creating and editing tasks with dynamic Priority and Due Date.
+*   **Workload Collision Alerts:** Throws a non-blocking toast warning (`Warning: [User] is overloaded`) when a team member is assigned more than 3 active `IN_PROGRESS` tasks.
+*   **Strict Validations:**
+    *   Prevent duplicate task titles within the same project.
+    *   Prevent assigning task due dates beyond the parent project's deadline.
+    *   Prevent reassigning completed tasks.
+    *   Prevent setting past dates as due dates.
+
+### 3. Analytics & Productivity Insights
+*   **Recharts Integration:** Visualizes task status distribution using interactive charts.
+*   **Workspace KPI Summary:** Real-time counters showing Total Projects, Total Tasks, Completed Tasks, Pending Tasks, and Overdue Tasks.
+*   **Progress Tracking:** Percentage-based progress bars for active projects.
+*   **Upcoming Deadlines & Logs:** Instant listing of tasks due within 48 hours and a live activity feed.
+
+### 4. Advanced Search, Sort, and Filter
+*   **Live Search:** Search projects, tasks, and members instantly by typing names/titles.
+*   **Multi-Criteria Filters:** Filter by Priority, Status, and Assignee.
+*   **Multiple Sort Modes:** Sort tasks by due date, priority, creation date, and updated date.
+*   **Clean Pagination:** Desktop-optimized page controllers aligned neatly at the bottom-right of tables.
+
+### 5. Extra Productivity Features
+*   **Task Comments & Mock Attachments:** Add comments and upload files (simulated progress indicators) inside task details drawers.
+*   **Real-time Alerts:** A notification bell displaying counts of unread alerts with immediate read-marking.
+*   **Dual Mode Engine:** Responsive, beautiful Dark/Light theme toggle.
+
+
+## 🛠️ Tech Stack & Key Libraries
+
+*   **Core Framework:** Next.js 15+ (App Router)
+*   **State Management:** Redux Toolkit
+*   **Data Fetching:** RTK Query (auto-caching and query hooks)
+*   **UI Icons:** Lucide React
+*   **Visualization:** Recharts
+*   **Toasts:** Sonner
+*   **Styling:** Tailwind CSS
+
+---
+
+## ⚙️ Local Setup Instructions
 
 ### Prerequisites
 *   Node.js (v18 or higher)
 *   npm or yarn
 
 ### 1. Install Dependencies
-Navigate into the `frontend` folder and install all necessary packages:
+Run the install command inside the `frontend` folder:
 ```bash
 npm install
 ```
@@ -42,24 +88,9 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
 ```
 
 ### 3. Run Development Server
-Start the frontend hot-reloading development server:
+Start the Next.js development server:
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) inside your web browser.
-
----
-
-## 🎨 Design Features
-
-*   **Modular Architecture:** Unified layouts for Admin, Project Managers, and Members with dedicated routes.
-*   **Vibrant HSL Theme Palette:** Seamless dark and light themes that reflect professional SaaS standards.
-*   **Smart Feedback Toasts:** Non-blocking warnings (such as user overload warning trigger) and errors are gracefully displayed to the user using Sonner.
-*   **Demo Sandbox Selector:** Allows testers to choose an identity role and sign in with a single click.
- 
----
- 
-## 🌐 Deployment
- 
-For comprehensive instructions on deploying both the backend and frontend to services like Render and Vercel, please refer to the primary repository's [README.md](../README.md#%F0%9F%8C%90-deployment-instructions).

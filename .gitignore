@@ -35,9 +35,14 @@ yarn-error.log*
 
 # vercel
 .vercel
+AGENTS.md
+CLAUDE.md
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
 .vercel
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
