@@ -72,6 +72,8 @@ export default function TaskPipeline({
             <select value={sortField} onChange={(e) => setSortField(e.target.value)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-600 dark:text-slate-400 outline-none cursor-pointer">
               <option value="dueDate">Due Date</option>
               <option value="priority">Priority</option>
+              <option value="createdAt">Latest Created</option>
+              <option value="updatedAt">Recently Updated</option>
               <option value="title">Title</option>
             </select>
             <select value={sortDir} onChange={(e) => setSortDir(e.target.value as any)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-600 dark:text-slate-400 outline-none cursor-pointer">

@@ -15,6 +15,7 @@ export default function CreateTaskModal({ projectDetails, formError, setFormErro
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [assignee, setAssignee] = useState('');
+  const [priority, setPriority] = useState('MEDIUM');
   const [dueDate, setDueDate] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,7 +33,7 @@ export default function CreateTaskModal({ projectDetails, formError, setFormErro
       }
     }
 
-    await onSubmit({ title, description: desc, priority: 'MEDIUM', status: 'TO_DO', assigneeId: assignee || undefined, dueDate });
+    await onSubmit({ title, description: desc, priority, status: 'TO_DO', assigneeId: assignee || undefined, dueDate });
   };
 
   return (
@@ -52,18 +53,26 @@ export default function CreateTaskModal({ projectDetails, formError, setFormErro
             <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Description (Optional)</label>
             <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Task details" className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-800 dark:text-slate-200 outline-none" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Assign Member</label>
-              <select value={assignee} onChange={(e) => setAssignee(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-500 dark:text-slate-400 outline-none">
+              <select value={assignee} onChange={(e) => setAssignee(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-550 dark:text-slate-450 outline-none cursor-pointer">
                 <option value="">Unassigned</option>
                 {projectDetails?.teamMembers?.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
                 {projectDetails?.owner && <option value={projectDetails.owner.id}>{projectDetails.owner.name} (Manager)</option>}
               </select>
             </div>
             <div>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Priority</label>
+              <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-550 dark:text-slate-450 outline-none cursor-pointer">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+              </select>
+            </div>
+            <div>
               <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Due Date</label>
-              <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-500 dark:text-slate-400 outline-none" />
+              <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-500 dark:text-slate-400 outline-none cursor-pointer" />
             </div>
           </div>
           <button type="submit" disabled={isCreatingTask} className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white transition rounded-xl font-bold text-xs cursor-pointer">
